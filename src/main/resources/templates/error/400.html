@@ -24,7 +24,7 @@
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/questions/">LearnCards</a>
+        <a class="navbar-brand" href="#">LearnCards</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/question/">Question List</a>
+                    <a class="nav-link" aria-current="page" href="#">Question List</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Start Quiz</a>
@@ -53,61 +53,9 @@
     <th:block
             th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}">
 
-    <div class=" bg-light p-4 rounded
-    ">
-    <ol>
-        <li th:each="question: ${questions}">
-            <span th:text="${question.getName()}"></span>
-            <a th:href="@{'/question/' + ${question.getId()}}">Edit</a>
-        </li>
-    </ol>
-
-
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item" th:disabled="${questions.isFirst()}">
-
-            <a id="pagination-previous"
-               class="page-link"
-               th:href="${questions.isFirst()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number - 1).toUriString()}"
-               th:disabled="${questions.isFirst()}">
-                <<
-            </a>
-
-            </li>
-
-
-            <th:block
-                    th:with="startPage=${T(Math).max(1, questions.getNumber() - 1)},endPage=${T(Math).min(startPage + 4, questions.getTotalPages())}">
-                <li
-                        class="page-item"
-                        th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
-                >
-                    <a
-                            class="page-link"
-                            th:href="${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pageNumber - 1).toUriString()}"
-                            th:id="${'pagination-page-' + pageNumber}"
-                    >
-                        <span th:text="${pageNumber}" th:remove="tag"></span>
-                    </a>
-                </li>
-
-            </th:block>
-
-            <li class="page-item" th:disabled="${questions.isLast()}">
-
-                <a id="pagination-next"
-                   class="page-link"
-                   th:href="${questions.isLast()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number + 1).toUriString()}"
-                   th:disabled="${questions.isLast()}">
-                    >>
-                </a>
-
-            </li>
-        </ul>
-    </nav>
-
-    </div>
+        <div class=" bg-light p-4 rounded">
+            <h1>Probably wrong url parameter.</h1>
+        </div>
 
     </th:block>
 </main>

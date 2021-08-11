@@ -36,7 +36,7 @@ public class MainController {
     @Autowired
     QuestionService service;
 
-    @GetMapping("/")
+    @GetMapping("/question/")
     String main(Model model, @SortDefault.SortDefaults(@SortDefault("name")) Pageable pageable) {
         Sort sort = Sort.by("name");
         Page<Question> questions = repo.findAll(pageable);
@@ -44,14 +44,14 @@ public class MainController {
         return "main";
     }
 
-    @GetMapping("/create")
+    @GetMapping("/question/create")
     public String createQuestionForm(Model model) {
         model.addAttribute("question", new CreateQuestionFormData());
         model.addAttribute("editMode", EditMode.CREATE);
         return "edit";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/question/create")
     public String doCreateQuestion(@Valid @ModelAttribute("question") CreateQuestionFormData formData,
                                    BindingResult bindingResult) {
 
@@ -66,10 +66,10 @@ public class MainController {
 
         repo.save(q);
 
-        return "redirect:/";
+        return "redirect:/question/";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/question/{id}")
     public String editQuestionForm(@PathVariable("id") Long id, Model model) {
 
         Question q = service.findById(id);
@@ -78,7 +78,7 @@ public class MainController {
         return "edit";
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/question/{id}")
     public String doEditQuestion(@PathVariable("id") Long id,
                                  @Valid @ModelAttribute("question") EditQuestionParameters formData,
                                  BindingResult bindingResult,
@@ -90,6 +90,8 @@ public class MainController {
 
         service.editQuestion(id, formData);
 
-        return "redirect:/";
+        return "redirect:/question/";
     }
+
+
 }

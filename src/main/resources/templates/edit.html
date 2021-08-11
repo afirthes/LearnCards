@@ -55,7 +55,7 @@
 
         <form id="question-form"
               th:object="${question}"
-              th:action="${editMode?.name() == 'UPDATE'}?@{/{id}(id=${question.getId()})}:@{/create}"
+              th:action="${editMode?.name() == 'UPDATE'}?@{/question/{id}(id=${question.getId()})}:@{/question/create}"
               method="post">
             <input type="hidden" th:field="*{version}" th:if="${editMode?.name()=='UPDATE'}">
             <div class="bg-light p-4 rounded">
