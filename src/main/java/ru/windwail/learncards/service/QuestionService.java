@@ -29,6 +29,10 @@ public class QuestionService {
         return q;
     }
 
+    public void deleteQuestion(Long id) {
+        repository.deleteById(id);
+    }
+
     public Question editQuestion(Long id, EditQuestionParameters params) {
         Question q = repository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));

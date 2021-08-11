@@ -53,61 +53,61 @@
     <th:block
             th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}">
 
-    <div class=" bg-light p-4 rounded
+        <div class=" bg-light p-4 rounded
     ">
-    <ol>
-        <li th:each="question: ${questions}">
-            <span th:text="${question.getName()}"></span>
-            <a th:href="@{'/question/' + ${question.getId()}}">Edit</a>
-        </li>
-    </ol>
-
-
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item" th:disabled="${questions.isFirst()}">
-
-            <a id="pagination-previous"
-               class="page-link"
-               th:href="${questions.isFirst()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number - 1).toUriString()}"
-               th:disabled="${questions.isFirst()}">
-                <<
-            </a>
-
-            </li>
-
-
-            <th:block
-                    th:with="startPage=${T(Math).max(1, questions.getNumber() - 1)},endPage=${T(Math).min(startPage + 4, questions.getTotalPages())}">
-                <li
-                        class="page-item"
-                        th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
-                >
-                    <a
-                            class="page-link"
-                            th:href="${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pageNumber - 1).toUriString()}"
-                            th:id="${'pagination-page-' + pageNumber}"
-                    >
-                        <span th:text="${pageNumber}" th:remove="tag"></span>
-                    </a>
+            <ol>
+                <li th:each="question: ${questions}">
+                    <span th:text="${question.getName()}"></span>
+                    <a th:href="@{'/question/' + ${question.getId()}}">Edit</a>
+                    <a th:href="@{/question/{id}/delete(id=${question.id})}" onclick="return confirm('Are you sure you want to delete this item')">Delete</a>
                 </li>
+            </ol>
 
-            </th:block>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item" th:disabled="${questions.isFirst()}">
 
-            <li class="page-item" th:disabled="${questions.isLast()}">
+                        <a id="pagination-previous"
+                           class="page-link"
+                           th:href="${questions.isFirst()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number - 1).toUriString()}"
+                           th:disabled="${questions.isFirst()}">
+                            <<
+                        </a>
 
-                <a id="pagination-next"
-                   class="page-link"
-                   th:href="${questions.isLast()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number + 1).toUriString()}"
-                   th:disabled="${questions.isLast()}">
-                    >>
-                </a>
+                    </li>
 
-            </li>
-        </ul>
-    </nav>
 
-    </div>
+                    <th:block
+                            th:with="startPage=${T(Math).max(1, questions.getNumber() - 1)},endPage=${T(Math).min(startPage + 4, questions.getTotalPages())}">
+                        <li
+                                class="page-item"
+                                th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+                        >
+                            <a
+                                    class="page-link"
+                                    th:href="${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pageNumber - 1).toUriString()}"
+                                    th:id="${'pagination-page-' + pageNumber}"
+                            >
+                                <span th:text="${pageNumber}" th:remove="tag"></span>
+                            </a>
+                        </li>
+
+                    </th:block>
+
+                    <li class="page-item" th:disabled="${questions.isLast()}">
+
+                        <a id="pagination-next"
+                           class="page-link"
+                           th:href="${questions.isLast()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number + 1).toUriString()}"
+                           th:disabled="${questions.isLast()}">
+                            >>
+                        </a>
+
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
 
     </th:block>
 </main>

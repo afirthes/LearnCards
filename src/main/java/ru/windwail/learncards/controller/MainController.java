@@ -93,5 +93,11 @@ public class MainController {
         return "redirect:/question/";
     }
 
+    @GetMapping("/question/{id}/delete")
+    public String doDeleteUser(@PathVariable("id") Long id) {
+        service.deleteQuestion(id);
+        return "redirect:/question/";
+    }
+
 
 }
