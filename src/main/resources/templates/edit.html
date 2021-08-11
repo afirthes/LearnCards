@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Edit</title>
 
     <style>
         body {
@@ -53,61 +53,47 @@
     <th:block
             th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}">
 
-    <div class=" bg-light p-4 rounded
-    ">
-    <ol>
-        <li th:each="question: ${questions}">
-            <span th:text="${question.getName()}"></span>
-            <a th:href="@{'/' + ${question.getId()}}">Edit</a>
-        </li>
-    </ol>
+        <form id="question-form"
+              th:object="${question}"
+              th:action="${editMode?.name() == 'UPDATE'}?@{/{id}(id=${question.getId()})}:@{/create}"
+              method="post">
+            <input type="hidden" th:field="*{version}" th:if="${editMode?.name()=='UPDATE'}">
+            <div class="bg-light p-4 rounded">
+                <div class="mb-3">
+                    <label for="question-name-input" class="form-label">Name</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="question-name-input"
+                            th:field="*{name}"
+                            th:classappend="${#fields.hasErrors('name')?'is-invalid':''}">
+                </div>
+                <div class="mb-3">
+                    <label for="question-question-input" class="form-label">Question</label>
+                    <textarea
+                            class="form-control"
+                            id="question-question-input"
+                            th:field="*{question}"
+                            th:classappend="${#fields.hasErrors('question')?'is-invalid':''}">
+                            rows="3"></textarea>
+                </div>
+                <div class="mb-3" >
+                    <label for="question-answer-input" class="form-label">Answer</label>
+                    <textarea
+                            class="form-control"
+                            id="question-answer-input"
+                            th:field="*{answer}"
+                            th:classappend="${#fields.hasErrors('answer')?'is-invalid':''}">
+                            rows="3"></textarea>
+                </div>
+                <div class="md3">
+                                <button type="button" class="btn btn-outline-dark">Cancel</button>
+                                <button type="submit" class="btn btn-success"
+                                    th:text="${editMode?.name()=='UPDATE'}?'Update':'Create'">Save</button>
+                </div>
 
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item" th:disabled="${questions.isFirst()}">
-
-            <a id="pagination-previous"
-               class="page-link"
-               th:href="${questions.isFirst()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number - 1).toUriString()}"
-               th:disabled="${questions.isFirst()}">
-                <<
-            </a>
-
-            </li>
-
-
-            <th:block
-                    th:with="startPage=${T(Math).max(1, questions.getNumber() - 1)},endPage=${T(Math).min(startPage + 4, questions.getTotalPages())}">
-                <li
-                        class="page-item"
-                        th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
-                >
-                    <a
-                            class="page-link"
-                            th:href="${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pageNumber - 1).toUriString()}"
-                            th:id="${'pagination-page-' + pageNumber}"
-                    >
-                        <span th:text="${pageNumber}" th:remove="tag"></span>
-                    </a>
-                </li>
-
-            </th:block>
-
-            <li class="page-item" th:disabled="${questions.isLast()}">
-
-                <a id="pagination-next"
-                   class="page-link"
-                   th:href="${questions.isLast()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number + 1).toUriString()}"
-                   th:disabled="${questions.isLast()}">
-                    >>
-                </a>
-
-            </li>
-        </ul>
-    </nav>
-
-    </div>
+        </form>
 
     </th:block>
 </main>

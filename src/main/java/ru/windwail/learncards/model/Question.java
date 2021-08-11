@@ -27,4 +27,7 @@ public class Question {
 
     LocalDateTime creationTime;
 
+    @Version
+    private Integer version;
+
 }
