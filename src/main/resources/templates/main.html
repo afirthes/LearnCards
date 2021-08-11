@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+
+    <style>
+        body {
+            min-height: 75rem;
+            padding-top: 4.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">LearnCards</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="#">Question List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Start Quiz</a>
+                </li>
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
+                <!--                </li>-->
+            </ul>
+            <!--            <form class="d-flex">-->
+            <!--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
+            <!--                <button class="btn btn-outline-success" type="submit">Search</button>-->
+            <!--            </form>-->
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <th:block
+            th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}">
+
+    <div class=" bg-light p-5 rounded
+    ">
+    <ol>
+        <li th:each="question: ${questions}">
+            <span th:text="${question.getName()}"></span>
+            <a th:href="@{/edit}">Edit</a>
+        </li>
+    </ol>
+
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:disabled="${questions.isFirst()}">
+
+            <a id="pagination-previous"
+               class="page-link"
+               th:href="${questions.isFirst()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number - 1).toUriString()}"
+               th:disabled="${questions.isFirst()}">
+                <<
+            </a>
+
+            </li>
+
+
+            <th:block
+                    th:with="startPage=${T(Math).max(1, questions.getNumber() - 1)},endPage=${T(Math).min(startPage + 4, questions.getTotalPages())}">
+                <li
+                        class="page-item"
+                        th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+                >
+                    <a
+                            class="page-link"
+                            th:href="${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pageNumber - 1).toUriString()}"
+                            th:id="${'pagination-page-' + pageNumber}"
+                    >
+                        <span th:text="${pageNumber}" th:remove="tag"></span>
+                    </a>
+                </li>
+
+            </th:block>
+
+            <li class="page-item" th:disabled="${questions.isLast()}">
+
+                <a id="pagination-next"
+                   class="page-link"
+                   th:href="${questions.isLast()}?'javascript:void(0)':${urlBuilder.fromCurrentRequest().replaceQueryParam('page', questions.number + 1).toUriString()}"
+                   th:disabled="${questions.isLast()}">
+                    >>
+                </a>
+
+            </li>
+        </ul>
+    </nav>
+
+    </div>
+
+    </th:block>
+</main>
+
+
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+-->
+</body>
+</html>
