@@ -21,8 +21,10 @@ public class Question {
 
     String name;
 
+    @Lob
     String question;
 
+    @Lob
     String answer;
 
     LocalDateTime creationTime;

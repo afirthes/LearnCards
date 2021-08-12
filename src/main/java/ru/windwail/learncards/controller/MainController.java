@@ -1,5 +1,6 @@
 package ru.windwail.learncards.controller;
 
+import com.google.common.base.Equivalence;
 import org.hibernate.QueryTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,10 +11,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.windwail.learncards.enums.EditMode;
 import ru.windwail.learncards.model.CreateQuestionFormData;
 import ru.windwail.learncards.model.EditQuestionParameters;
@@ -99,5 +97,12 @@ public class MainController {
         return "redirect:/question/";
     }
 
+    @GetMapping("/question/{id}/show")
+    public String showQuestion(@PathVariable("id") Long id, Model model) {
+        Question q = service.findById(id);
+        model.addAttribute("question", new EditQuestionParameters(q));
+        model.addAttribute("editMode", EditMode.UPDATE);
+        return "show";
+    }
 
 }

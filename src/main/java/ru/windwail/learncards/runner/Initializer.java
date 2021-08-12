@@ -11,7 +11,7 @@ import ru.windwail.learncards.service.QuestionService;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
+//@Component
 public class Initializer implements CommandLineRunner {
 
     @Autowired
