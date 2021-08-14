@@ -3,6 +3,7 @@ package ru.windwail.learncards.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -24,6 +25,8 @@ public class Category {
             generator="category_seq")
     Long id;
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
     String name;
 
     @OneToMany(cascade = CascadeType.ALL,

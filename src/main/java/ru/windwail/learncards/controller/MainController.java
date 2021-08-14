@@ -1,10 +1,7 @@
 package ru.windwail.learncards.controller;
 
-import com.google.common.base.Equivalence;
-import org.hibernate.QueryTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
@@ -13,58 +10,123 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.windwail.learncards.enums.EditMode;
-import ru.windwail.learncards.model.CreateQuestionFormData;
-import ru.windwail.learncards.model.EditQuestionParameters;
-import ru.windwail.learncards.model.Question;
+import ru.windwail.learncards.exception.CategoryNotFoundException;
+import ru.windwail.learncards.exception.QuestionNotFoundException;
+import ru.windwail.learncards.model.*;
+import ru.windwail.learncards.repository.CategoryRepository;
 import ru.windwail.learncards.repository.QuestionRepository;
 import ru.windwail.learncards.service.QuestionService;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 public class MainController {
 
     @Autowired
-    QuestionRepository repo;
+    QuestionRepository questionRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Autowired
     QuestionService service;
 
-    @GetMapping("/question/")
-    String main(Model model, @SortDefault.SortDefaults(@SortDefault("name")) Pageable pageable) {
-        Sort sort = Sort.by("name");
-        Page<Question> questions = repo.findAll(pageable);
+    @GetMapping("/category/{category_id}")
+    @Transactional
+    String main(
+            @PathVariable("category_id") Long id, Model model, @SortDefault.SortDefaults(@SortDefault("id")) Pageable pageable) {
+        Page<Question> questions = questionRepository.findByCategoryId(id, pageable);
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
         model.addAttribute("questions", questions);
-        return "main";
+        model.addAttribute("category", category);
+        return "questions";
     }
 
-    @GetMapping("/question/create")
-    public String createQuestionForm(Model model) {
+    @GetMapping("/categories")
+    @Transactional
+    String categories(Model model, @SortDefault.SortDefaults(@SortDefault("name")) Pageable pageable) {
+        Sort sort = Sort.by("id");
+        Page<Category> categories = categoryRepository.findByParentId(null, pageable);
+        CreateSubCategoryParameters subcategory = new CreateSubCategoryParameters();
+        DeleteCategoryParameters deleCategory = new DeleteCategoryParameters();
+        model.addAttribute("subcategory", subcategory);
+        model.addAttribute("categories", categories);
+        model.addAttribute("deleCategory", deleCategory);
+        return "categories";
+    }
+
+    @GetMapping("/category/{category_id}/create-question")
+    @Transactional
+    public String createQuestionForm(@PathVariable("category_id") Long id,
+                                     Model model) {
+        Category category = questionRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id)).getCategory();
         model.addAttribute("question", new CreateQuestionFormData());
+        model.addAttribute("category", category);
         model.addAttribute("editMode", EditMode.CREATE);
         return "edit";
     }
 
-    @PostMapping("/question/create")
-    public String doCreateQuestion(@Valid @ModelAttribute("question") CreateQuestionFormData formData,
+
+
+    @PostMapping("/category/delete-category")
+    @Transactional
+    public String deleteCategory(@ModelAttribute("deleCategory") DeleteCategoryParameters formData,
+                                    BindingResult bindingResult) {
+        Category category = categoryRepository.findById(formData.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException(formData.getCategoryId()));
+
+        categoryRepository.delete(category);
+
+        return "redirect:/categories";
+    }
+
+    @PostMapping("/category/create-subcategory")
+    @Transactional
+    public String createSubCategory(@ModelAttribute("subcategory") CreateSubCategoryParameters formData,
+                                    BindingResult bindingResult) {
+        Category parent;
+        if(formData.getCategoryId() == 0) {
+            // top level
+            parent = null;
+        } else {
+            parent = categoryRepository.findById(formData.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException(formData.getCategoryId()));
+        }
+
+
+        Category sub = new Category();
+        sub.setName(formData.getCategoryName());
+        sub.setParent(parent);
+        sub = categoryRepository.save(sub);
+
+        if(parent != null ) {
+            parent.getChildren().add(sub);
+        }
+
+        return "redirect:/categories";
+    }
+
+    @PostMapping("/category/{category_id}/create-question")
+    @Transactional
+    public String doCreateQuestion(@PathVariable("category_id") Long id,
+            @Valid @ModelAttribute("question") CreateQuestionFormData formData,
                                    BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
             return "edit";
         }
 
+        Category category = questionRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id)).getCategory();
+
         Question q = new Question();
         q.setName(formData.getName());
         q.setQuestion(formData.getQuestion());
         q.setAnswer(formData.getAnswer());
 
-        repo.save(q);
+        q = questionRepository.save(q);
 
-        return "redirect:/question/";
+        category.addQuestion(q);
+
+        return "redirect:/category/"+id;
     }
 
     @GetMapping("/question/{id}")

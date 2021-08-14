@@ -1,6 +1,7 @@
 package ru.windwail.learncards.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.validation.constraints.NotNull;
 import javax.annotation.processing.Generated;
@@ -37,9 +38,11 @@ public class Question {
     String name;
 
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     String question;
 
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     String answer;
 
     LocalDateTime creationTime;
