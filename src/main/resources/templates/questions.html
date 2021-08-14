@@ -24,13 +24,41 @@
 
 <div th:replace="includes/navigation :: navigation"/>
 
+<div class="modal fade" id="editCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form th:action="@{/category/{category_id}(category_id=${category.id})}"
+                  th:object="${editCategory}"
+                  method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="categoryName" class="col-form-label">Name:</label>
+                        <textarea class="form-control" id="categoryName" th:field="*{categoryName}"></textarea>
+                        <input type="hidden" id="categoryId" th:field="*{categoryId}"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <main class="container">
     <th:block
             th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}">
 
         <div class=" bg-light p-4 rounded">
             <h2 th:text="${category.name}"></h2>
-            <a th:href="@{/category/{category_id}/create-question(category_id=${category.id})}" class="btn btn-outline-success" role="button">Add question</a>
+            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#editCategory">
+            [Cange category name]</a>
+            <a th:href="@{/category/{category_id}/create-question(category_id=${category.id})}" role="button">[Add question]</a>
 
             <table class="table">
                 <thead>
@@ -45,8 +73,8 @@
                 <tr th:each="question: ${questions}">
                     <th scope="row"><span th:text="${question.getId()}"></span></th>
                     <td><span th:text="${question.getName()}"></span></td>
-                    <td><a th:href="@{'/question/' + ${question.getId()}}">Edit</a></td>
-                    <td><a th:href="@{/question/{id}/delete(id=${question.id})}"
+                    <td><a th:href="@{'/category/'+ ${category.id} +'/question/' + ${question.getId()}}">Edit</a></td>
+                    <td><a th:href="@{/category/{category_id}/question/{id}/delete(id=${question.id},category_id=${category.id})}"
                            onclick="return confirm('Are you sure you want to delete this item')">Delete</a></td>
                 </tr>
 

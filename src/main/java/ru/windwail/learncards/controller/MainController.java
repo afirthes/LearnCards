@@ -38,9 +38,27 @@ public class MainController {
             @PathVariable("category_id") Long id, Model model, @SortDefault.SortDefaults(@SortDefault("id")) Pageable pageable) {
         Page<Question> questions = questionRepository.findByCategoryId(id, pageable);
         Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
+
+        EditCategoryParameters editCategory = new EditCategoryParameters();
+        editCategory.setCategoryId(category.getId());
+        editCategory.setCategoryName(category.getName());
+
         model.addAttribute("questions", questions);
         model.addAttribute("category", category);
+        model.addAttribute("editCategory", editCategory);
         return "questions";
+    }
+
+    @PostMapping("/category/{category_id}")
+    @Transactional
+    public String editCategory(@ModelAttribute("editCategory") EditCategoryParameters formData,
+                                 BindingResult bindingResult) {
+
+        Category category = categoryRepository.findById(formData.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException(formData.getCategoryId()));
+
+        category.setName(formData.getCategoryName());
+
+        return "redirect:/category/"+formData.getCategoryId();
     }
 
     @GetMapping("/categories")
@@ -77,7 +95,7 @@ public class MainController {
 
         categoryRepository.delete(category);
 
-        return "redirect:/categories";
+        return "redirect:/category/"+formData.getCategoryId();
     }
 
     @PostMapping("/category/create-subcategory")
@@ -115,7 +133,7 @@ public class MainController {
             return "edit";
         }
 
-        Category category = questionRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id)).getCategory();
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
 
         Question q = new Question();
         q.setName(formData.getName());
@@ -129,17 +147,23 @@ public class MainController {
         return "redirect:/category/"+id;
     }
 
-    @GetMapping("/question/{id}")
-    public String editQuestionForm(@PathVariable("id") Long id, Model model) {
+    @GetMapping("/category/{category_id}/question/{id}")
+    public String editQuestionForm(@PathVariable("id") Long id,
+                                   @PathVariable("category_id") Long category_id,
+                                   Model model) {
+
+        Category category = categoryRepository.findById(category_id).orElseThrow(() -> new CategoryNotFoundException(category_id));
 
         Question q = service.findById(id);
         model.addAttribute("question", new EditQuestionParameters(q));
         model.addAttribute("editMode", EditMode.UPDATE);
+        model.addAttribute("category", category);
         return "edit";
     }
 
-    @PostMapping("/question/{id}")
+    @PostMapping("/category/{category_id}/question/{id}")
     public String doEditQuestion(@PathVariable("id") Long id,
+                                 @PathVariable("category_id") Long category_id,
                                  @Valid @ModelAttribute("question") EditQuestionParameters formData,
                                  BindingResult bindingResult,
                                  Model model) {
@@ -150,13 +174,14 @@ public class MainController {
 
         service.editQuestion(id, formData);
 
-        return "redirect:/question/";
+        return "redirect:/category/"+category_id;
     }
 
-    @GetMapping("/question/{id}/delete")
-    public String doDeleteUser(@PathVariable("id") Long id) {
+    @GetMapping("/category/{category_id}/question/{id}/delete")
+    public String doDeleteUser(@PathVariable("id") Long id,
+                               @PathVariable("category_id") Long category_id) {
         service.deleteQuestion(id);
-        return "redirect:/question/";
+        return "redirect:/category/"+category_id;
     }
 
     @GetMapping("/question/{id}/show")

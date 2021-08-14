@@ -32,7 +32,7 @@
 
         <form id="question-form"
               th:object="${question}"
-              th:action="${editMode?.name() == 'UPDATE'}?@{/question/{id}(id=${question.getId()})}:@{/category/{category_id}/create-question(category_id=${category.id})}"
+              th:action="${editMode?.name() == 'UPDATE'}?@{/category/{category_id}/question/{id}(id=${question.getId()},category_id=${category.id})}:@{/category/{category_id}/create-question(category_id=${category.id})}"
               method="post">
             <input type="hidden" th:field="*{version}" th:if="${editMode?.name()=='UPDATE'}">
             <div class="bg-light p-4 rounded">

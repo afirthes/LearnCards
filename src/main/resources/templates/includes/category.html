@@ -12,7 +12,7 @@
                th:attr="categoryId=${category.id}"
                data-bs-whatever="@mdo">
                 [Delete]</a>
-            <div th:with="category = ${category}"
+            <div t
                  th:include="includes/category.html :: categoryThread" th:remove="tag" ></div>
         </li>
     </ul>
