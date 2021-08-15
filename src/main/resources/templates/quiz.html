@@ -25,14 +25,31 @@
 <div th:replace="includes/navigation :: navigation"/>
 
 <main class="container">
-    <th:block
-            th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}">
+    <div class=" bg-light p-4 rounded">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">#</th>
+                <th scope="col">Question topic</th>
+                <th scope="col">Mark</th>
+                <th scope="col">Is passed</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="question: ${questions}">
+                <th scope="row"><span th:text="${question.orderId}"></span></th>
+                <th scope="row"><span th:text="${question.question.id}"></span></th>
+                <td><span th:text="${question.question.name}"></span></td>
+                <td><span th:text="${question.stars}"></span></td>
+                <td><span th:text="${question.passed}"></span></td>
+                <td><a th:href="@{/quiz/{qid}/question/{id}(qid=${quiz.id},id=${question.question.id})}">Show</a></td>
+            </tr>
 
-        <div class=" bg-light p-4 rounded">
-            <h1>Somebody else has edited the same thing as you. Please reload the page and redo your edit.</h1>
-        </div>
-
-    </th:block>
+            </tbody>
+        </table>
+    </div>
 </main>
 
 

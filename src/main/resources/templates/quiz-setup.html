@@ -27,6 +27,11 @@
 
 <main class="container">
 
+    <form
+            th:object="${quizStartParameters}"
+            th:action="@{/quiz-start}"
+            method="post"
+    >
 
         <div class=" bg-light p-4 rounded">
 
@@ -42,7 +47,16 @@
             <span>totalQuestions</span>
             <span th:text="${totalQuestions}"></span>
 
+            <input type="hidden" th:field="*{selectedArrayJSON}"/>
+
+            <input type="number" step="1" min="1"  th:field="*{numberOfQuestions}"
+                   th:attr="max=${totalQuestions}"
+                   class="form-control mb-4 col-4" placeholder="Number of questions">
+
+            <button type="submit" class="btn btn-primary">Start!</button>
+
         </div>
+    </form>
 
 </main>
 

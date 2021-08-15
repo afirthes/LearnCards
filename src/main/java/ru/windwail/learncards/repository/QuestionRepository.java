@@ -13,4 +13,6 @@ import java.util.List;
 public interface QuestionRepository extends PagingAndSortingRepository<Question, Long> {
 
     Page<Question> findByCategoryId(Long categoryId, Pageable page);
+
+    List<Question> findByIdIn(Long[] ids);
 }

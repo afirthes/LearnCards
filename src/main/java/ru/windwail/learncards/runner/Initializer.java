@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
+//@Component
 public class Initializer implements CommandLineRunner {
 
     @Autowired

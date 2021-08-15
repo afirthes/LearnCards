@@ -102,55 +102,72 @@
 
 <main class="container">
 
-    <div class="card" style="margin-bottom: 1rem">
-        <div class="card-header">
-            Question
-        </div>
-        <div class="card-body">
-            <blockquote class="blockquote mb-0">
-                <div id="scrolling-container-question">
-                    <div id="quill-container-question">
+    <form method="post"
+          th:action="@{/quiz/{qid}/question/{id}(qid=${question.quizId},id=${question.id})}"
+          th:object="${question}">
+
+        <a class="btn btn-outline-success btn-sm" type="button" style="margin-bottom: 1rem"
+           th:href="@{/quiz/{qid}(qid=${question.quizId})}">
+            To list
+        </a>
+
+        <div class="card" style="margin-bottom: 1rem">
+            <div class="card-header">
+                Question
+            </div>
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <div id="scrolling-container-question">
+                        <div id="quill-container-question">
+                        </div>
                     </div>
-                </div>
-            </blockquote>
+                </blockquote>
+            </div>
         </div>
-    </div>
 
-    <p>
-        <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="collapse"
-                data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
-            Answer
-        </button>
-        <button class="btn btn-outline-success btn-sm" type="button" style="margin-left: 1rem">
-            Next
-        </button>
-    </p>
+        <p>
+            <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                Answer
+            </button>
+            <button class="btn btn-outline-success btn-sm" type="submit" style="margin-left: 1rem">
+                Next
+            </button>
+        </p>
 
-    <div style="margin-bottom: 1rem">
-        <div class="collapse collapse-horizontal" id="collapseWidthExample">
-            <div class="card card-body">
-                <div id="scrolling-container-answer">
-                    <div id="quill-container-answer">
+        <div style="margin-bottom: 1rem">
+            <div class="collapse collapse-horizontal" id="collapseWidthExample">
+                <div class="card card-body">
+                    <div id="scrolling-container-answer">
+                        <div id="quill-container-answer">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div>
-        <fieldset class="rating">
-            <input type="radio" id="star5" name="rating" value="5"/>
-            <label for="star5">5 stars</label>
-            <input type="radio" id="star4" name="rating" value="4"/>
-            <label for="star4">4 stars</label>
-            <input type="radio" id="star3" name="rating" value="3"/>
-            <label for="star3">3 stars</label>
-            <input type="radio" id="star2" name="rating" value="2"/>
-            <label for="star2">2 stars</label>
-            <input type="radio" id="star1" name="rating" value="1"/>
-            <label for="star1">1 star</label>
-        </fieldset>
-    </div>
+        <div>
+            <fieldset class="rating">
+                <input type="radio" id="star5" name="rating" value="5" th:field="*{mark}"/>
+                <label for="star5">5 stars</label>
+                <input type="radio" id="star4" name="rating" value="4" th:field="*{mark}"/>
+                <label for="star4">4 stars</label>
+                <input type="radio" id="star3" name="rating" value="3" th:field="*{mark}"/>
+                <label for="star3">3 stars</label>
+                <input type="radio" id="star2" name="rating" value="2" th:field="*{mark}"/>
+                <label for="star2">2 stars</label>
+                <input type="radio" id="star1" name="rating" value="1" th:field="*{mark}"/>
+                <label for="star1">1 star</label>
+            </fieldset>
+        </div>
+
+        <input type="hidden" th:field="*{quizId}">
+        <input type="hidden" th:field="*{questionId}">
+        <input type="hidden" th:field="*{orderId}">
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{version}">
+
+    </form>
 
 
 </main>
@@ -158,7 +175,6 @@
 <!-- Include the Quill library -->
 <script src="https://cdn.quilljs.com/1.2.2/quill.min.js"></script>
 <script src="https://cdn.rawgit.com/kensnyder/quill-image-resize-module/3411c9a7/image-resize.min.js"></script>
-
 
 
 <script th:inline="javascript">
@@ -171,7 +187,7 @@
         theme: 'bubble',
         modules: {
             imageResize: {
-                modules: [ ]
+                modules: []
             }
         }
     });
@@ -182,7 +198,7 @@
         theme: 'bubble',
         modules: {
             imageResize: {
-                modules: [ ]
+                modules: []
             }
         }
     });
