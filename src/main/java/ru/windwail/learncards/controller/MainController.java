@@ -150,7 +150,7 @@ public class MainController {
     @Transactional
     public String createQuestionForm(@PathVariable("category_id") Long id,
                                      Model model) {
-        Category category = questionRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id)).getCategory();
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
         model.addAttribute("question", new CreateQuestionFormData());
         model.addAttribute("category", category);
         model.addAttribute("editMode", EditMode.CREATE);
@@ -166,7 +166,7 @@ public class MainController {
 
         categoryRepository.delete(category);
 
-        return "redirect:/category/" + formData.getCategoryId();
+        return "redirect:/categories";
     }
 
     @PostMapping("/category/create-subcategory")

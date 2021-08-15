@@ -16,6 +16,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${secure-user}")
     private String secureUser;
 
+    @Value("${secure-pass2}")
+    private String securePass2;
+
+    @Value("${secure-user2}")
+    private String secureUser2;
+
     private final PasswordEncoder passwordEncoder;
 
     public WebSecurityConfiguration(PasswordEncoder passwordEncoder) {
@@ -27,6 +33,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser(secureUser)
                 .password(passwordEncoder.encode(securePass))
+                .roles("USER")
+                .and()
+                .withUser(secureUser2)
+                .password(passwordEncoder.encode(securePass2))
                 .roles("USER");
 
     }
