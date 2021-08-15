@@ -2,18 +2,20 @@
 <body>
 <div th:fragment="categoryThread" th:remove="tag">
     <ul>
-        <li th:each="category : ${category.children}" >
-            <span th:text="${category.name}">Category</span>
-            <a th:href="@{'/category/' + ${category.id}}">[Edit]</a>
-            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#createSubCategory"
-               th:attr="categoryId=${category.id}">
-                [Subcategory]</a>
-            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#categoryDelete"
-               th:attr="categoryId=${category.id}"
-               data-bs-whatever="@mdo">
-                [Delete]</a>
-            <div t
-                 th:include="includes/category.html :: categoryThread" th:remove="tag" ></div>
+        <li th:each="category : ${category.children}">
+            <div>
+                <input type="checkbox" th:field="*{selected}" th:value="${category.id}" class="categoryCheckbox"/>
+                <span th:text="${category.name}">Category</span>
+                <a th:href="@{'/category/' + ${category.id}}">[Edit]</a>
+                <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#createSubCategory"
+                   th:attr="categoryId=${category.id}">
+                    [Subcategory]</a>
+                <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#categoryDelete"
+                   th:attr="categoryId=${category.id}"
+                   data-bs-whatever="@mdo">
+                    [Delete]</a>
+            </div>
+            <div th:include="includes/category.html :: categoryThread" th:remove="tag"></div>
         </li>
     </ul>
 </div>

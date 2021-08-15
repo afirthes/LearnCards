@@ -7,7 +7,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import ru.windwail.learncards.model.Category;
 
+import java.util.List;
+
 public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> {
 
-    Page<Category> findByParentId(Long id, Pageable pageable);
+    List<Category> findByParentId(Long id);
+
+    List<Category> findByIdIn(List<Long> ids);
 }

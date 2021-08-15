@@ -19,6 +19,10 @@ import ru.windwail.learncards.service.QuestionService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -63,15 +67,33 @@ public class MainController {
 
     @GetMapping("/categories")
     @Transactional
-    String categories(Model model, @SortDefault.SortDefaults(@SortDefault("name")) Pageable pageable) {
-        Sort sort = Sort.by("id");
-        Page<Category> categories = categoryRepository.findByParentId(null, pageable);
+    String categories(Model model, @SortDefault.SortDefaults(@SortDefault("id")) Pageable pageable) {
+        List<Category> categories = categoryRepository.findByParentId(null);
         CreateSubCategoryParameters subcategory = new CreateSubCategoryParameters();
         DeleteCategoryParameters deleCategory = new DeleteCategoryParameters();
+        SelectedCategories selectedCategories = new SelectedCategories();
         model.addAttribute("subcategory", subcategory);
         model.addAttribute("categories", categories);
         model.addAttribute("deleCategory", deleCategory);
+        model.addAttribute("selectedCategories", selectedCategories);
         return "categories";
+    }
+
+
+
+
+    @PostMapping("/quiz-setup")
+    @Transactional
+    String quizSetup(@ModelAttribute("deleCategory") SelectedCategories formData, Model model) {
+        model.addAttribute("selectedCategories", formData);
+
+        List<Category> categories = categoryRepository.findByIdIn(formData.getSelected());
+        Set<Question> allQuestions = categories.stream().flatMap(c -> c.getQuestions().stream()).collect(Collectors.toSet());
+
+        model.addAttribute("totalCategories", categories.size());
+        model.addAttribute("totalQuestions", allQuestions.size());
+
+        return "quiz-setup";
     }
 
     @GetMapping("/category/{category_id}/create-question")

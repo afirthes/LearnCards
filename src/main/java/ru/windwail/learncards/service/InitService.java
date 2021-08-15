@@ -75,17 +75,17 @@ public class InitService {
         Category c3 = new Category();
         c3.setName(faker.lorem().paragraph(5));
         c3.setParent(c2);
-        c3.addQuestion(set.get(3));
-        c3.addQuestion(set.get(4));
-        c3.addQuestion(set.get(5));
+        c3.addQuestion(set.get(6));
+        c3.addQuestion(set.get(7));
+        c3.addQuestion(set.get(8));
         c3 = categoryRepository.save(c3);
 
         Category c4 = new Category();
         c4.setName(faker.lorem().paragraph(5));
         c4.setParent(c3);
-        c4.addQuestion(set.get(3));
-        c4.addQuestion(set.get(4));
-        c4.addQuestion(set.get(5));
+        c4.addQuestion(set.get(9));
+        c4.addQuestion(set.get(10));
+        c4.addQuestion(set.get(11));
         c4 = categoryRepository.save(c4);
     }
 }

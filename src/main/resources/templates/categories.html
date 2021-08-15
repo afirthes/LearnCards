@@ -18,6 +18,11 @@
             min-height: 75rem;
             padding-top: 4.5rem;
         }
+
+        input[type=checkbox] {
+            transform: scale(2);
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -74,9 +79,6 @@
 </div>
 
 
-
-
-
 <main class="container">
     <th:block
             th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder)}">
@@ -88,23 +90,31 @@
 
         <div class=" bg-light p-4 rounded">
 
-            <div th:each="category : ${categories}">
-                <div>
-                    <h5 th:text="${category.name}"/>
-                    <a th:href="@{'/category/' + ${category.id}}">[Edit]</a>
-                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#createSubCategory"
-                       th:attr="categoryId=${category.id}">
-                        [Subcategory]</a>
-                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#categoryDelete"
-                       th:attr="categoryId=${category.id}"
-                       data-bs-whatever="@mdo">
-                        [Delete]</a>
-                    <div th:replace="includes/category :: categoryThread"
-                         th:with="category = ${category}"
-                    />
-                </div>
-            </div>
+            <form th:action="@{/quiz-setup}"
+                  th:object="${selectedCategories}"
+                  method="post">
+                <div th:each="category : ${categories}">
+                    <div>
+                        <h5>
+                            <input type="checkbox" th:field="*{selected}" th:value="${category.id}" class="categoryCheckbox"/>
+                            <span th:text="${category.name}"/>
+                        </h5>
 
+                        <a th:href="@{'/category/' + ${category.id}}">[Edit]</a>
+                        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#createSubCategory"
+                           th:attr="categoryId=${category.id}">
+                            [Subcategory]</a>
+                        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#categoryDelete"
+                           th:attr="categoryId=${category.id}"
+                           data-bs-whatever="@mdo">
+                            [Delete]</a>
+                        <div th:replace="includes/category :: categoryThread"
+                             th:with="category = ${category}"
+                        />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Start Quiz</button>
+            </form>
 
         </div>
 
@@ -126,7 +136,7 @@
         var button = event.relatedTarget
         var categoryId = button.getAttribute('categoryId')
         var categoryName = createSubCategoryModal.querySelector('#categoryName')
-        categoryName.value = "{"+categoryId+"}";
+        categoryName.value = "{" + categoryId + "}";
         var categoryIdInput = createSubCategoryModal.querySelector('#categoryId');
         categoryIdInput.value = categoryId;
 
@@ -140,6 +150,23 @@
         var categoryIdInput = categoryDeleteModal.querySelector('#deleteCategoryId');
         categoryIdInput.value = categoryId;
     });
+
+    function getSelectedCheckboxValues(name) {
+        const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+        let values = [];
+        checkboxes.forEach((checkbox) => {
+            values.push(checkbox.value);
+        });
+        return values;
+    }
+
+    const checkboxes = document.querySelectorAll('.categoryCheckbox');
+    checkboxes.forEach(cb => cb.addEventListener('click', (event) => {
+        var checked = event.target.checked;
+        var checkedContainer = event.target.parentElement.parentElement;
+        var allCheckboxesDown = checkedContainer.querySelectorAll(".categoryCheckbox");
+        allCheckboxesDown.forEach(c => c.checked = checked);
+    }));
 </script>
 
 <!-- Option 2: Separate Popper and Bootstrap JS -->

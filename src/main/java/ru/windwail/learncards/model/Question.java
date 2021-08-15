@@ -1,6 +1,7 @@
 package ru.windwail.learncards.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.Type;
 
 import javax.validation.constraints.NotNull;
