@@ -1,8 +1,11 @@
 package ru.windwail.learncards.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +36,12 @@ public class QuizAnswer implements Comparable {
     Boolean passed;
 
     Integer stars;
+
+    @UpdateTimestamp
+    LocalDateTime updateTime;
+
+    @CreationTimestamp
+    LocalDateTime createTime;
 
     @Override
     public boolean equals(Object o) {

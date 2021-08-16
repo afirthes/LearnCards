@@ -1,4 +1,4 @@
-package ru.windwail.learncards.model;
+package ru.windwail.learncards.model.web;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditCategoryParameters {
-
-    String categoryName;
+public class DeleteCategoryParameters {
 
     Long categoryId;
 }

@@ -3,8 +3,11 @@ package ru.windwail.learncards.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -27,6 +30,13 @@ public class Quiz {
             mappedBy = "quiz",
             orphanRemoval = true)
     Set<QuizAnswer> answers = new HashSet<>();
+
+
+    @UpdateTimestamp
+    LocalDateTime updateTime;
+
+    @CreationTimestamp
+    LocalDateTime createTime;
 
     @Override
     public boolean equals(Object o) {

@@ -3,9 +3,12 @@ package ru.windwail.learncards.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
@@ -62,6 +65,12 @@ public class Category {
             iterator.remove();
         }
     }
+
+    @UpdateTimestamp
+    LocalDateTime updateTime;
+
+    @CreationTimestamp
+    LocalDateTime createTime;
 
     @Override
     public boolean equals(Object o) {

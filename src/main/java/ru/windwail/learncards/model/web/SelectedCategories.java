@@ -1,4 +1,4 @@
-package ru.windwail.learncards.model;
+package ru.windwail.learncards.model.web;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

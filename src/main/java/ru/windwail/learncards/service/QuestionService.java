@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import ru.windwail.learncards.exception.QuestionNotFoundException;
-import ru.windwail.learncards.model.CreateQuestionParameters;
-import ru.windwail.learncards.model.EditQuestionParameters;
+import ru.windwail.learncards.model.web.EditQuestionParameters;
 import ru.windwail.learncards.model.Question;
 import ru.windwail.learncards.repository.QuestionRepository;
 
