@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,7 +48,7 @@ public class MainController {
     @GetMapping("/category/{category_id}")
     @Transactional
     String main(
-            @PathVariable("category_id") Long id, Model model, @SortDefault.SortDefaults(@SortDefault("id")) Pageable pageable) {
+            @PathVariable("category_id") Long id, Model model, @SortDefault.SortDefaults(@SortDefault(value = "id", direction = Sort.Direction.DESC)) Pageable pageable) {
         Page<Question> questions = questionRepository.findByCategoryId(id, pageable);
         Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
 
