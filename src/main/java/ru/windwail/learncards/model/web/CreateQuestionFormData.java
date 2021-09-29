@@ -23,5 +23,9 @@ public class CreateQuestionFormData {
     @NotEmpty
     String answer;
 
+    String tags;
+
+    String category;
+
     LocalDateTime creationTime;
 }

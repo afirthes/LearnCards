@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.windwail.learncards.model.Question;
+import ru.windwail.learncards.model.Tag;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +20,8 @@ public class EditQuestionParameters {
         this.answer = q.getAnswer();
         this.version = q.getVersion();
         this.id = q.getId();
+        this.tags =  q.getTags().stream().map(Tag::getName).collect(Collectors.joining(","));
+        this.category = q.getCategory().getName();
     }
 
     Long id;
@@ -29,4 +33,8 @@ public class EditQuestionParameters {
     String answer;
 
     Integer version;
+
+    String tags;
+
+    String category;
 }

@@ -6,8 +6,13 @@ import org.springframework.data.repository.CrudRepository;
 import ru.windwail.learncards.model.Tag;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 public interface TagRepository extends CrudRepository<Tag, Long> {
+
+    Tag findByName(String name);
+
 
 
 }

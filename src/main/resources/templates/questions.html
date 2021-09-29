@@ -24,6 +24,7 @@
 
 <div th:replace="includes/navigation :: navigation"/>
 
+
 <div class="modal fade" id="editCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -59,12 +60,24 @@
             <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#editCategory">
             [Cange category name]</a>
             <a th:href="@{/category/{category_id}/create-question(category_id=${category.id})}" role="button">[Add question]</a>
-
+            <form>
+                <div class="mb-3">
+                    <input
+                            id="category"
+                            type="text"
+                            name="q"
+                            th:value="${param.q}"
+                    />
+                    <button class="btn btn-primary btn-sm" type="submit">Search</button>
+                    <a class="btn btn-primary btn-sm" th:href="@{/category/{category_id}(category_id=${category.id})}" role="button">Reset</a>
+                </div>
+            </form>
             <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Question topic</th>
+                    <th scope="col"></th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                 </tr>
@@ -73,6 +86,7 @@
                 <tr th:each="question: ${questions}">
                     <th scope="row"><span th:text="${question.getId()}"></span></th>
                     <td><span th:text="${question.getName()}"></span></td>
+                    <td><span th:text="${question.getTagsString()}"></span></td>
                     <td><a th:href="@{'/category/'+ ${category.id} +'/question/' + ${question.getId()}}">Edit</a></td>
                     <td><a th:href="@{/category/{category_id}/question/{id}/delete(id=${question.id},category_id=${category.id})}"
                            onclick="return confirm('Are you sure you want to delete this item')">Delete</a></td>

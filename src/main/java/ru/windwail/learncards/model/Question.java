@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -76,6 +77,10 @@ public class Question {
             tag.getQuestions().remove(this);
             iterator.remove();
         }
+    }
+
+    public String getTagsString() {
+        return "" + tags.stream().map(Tag::getName).collect(Collectors.joining(","));
     }
 
     @Override

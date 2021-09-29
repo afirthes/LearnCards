@@ -18,4 +18,6 @@ public class CreateQuestionParameters {
 
     String answer;
 
+    String tags;
+
 }

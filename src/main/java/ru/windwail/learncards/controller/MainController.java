@@ -1,10 +1,14 @@
 package ru.windwail.learncards.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +20,10 @@ import ru.windwail.learncards.exception.QuestionNotFoundException;
 import ru.windwail.learncards.exception.QuizNotFoundException;
 import ru.windwail.learncards.model.*;
 import ru.windwail.learncards.model.web.*;
-import ru.windwail.learncards.repository.CategoryRepository;
-import ru.windwail.learncards.repository.QuestionRepository;
-import ru.windwail.learncards.repository.QuizAnswerRepository;
-import ru.windwail.learncards.repository.QuizRepository;
+import ru.windwail.learncards.repository.*;
 import ru.windwail.learncards.service.QuestionService;
 
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.*;
@@ -31,10 +33,16 @@ import java.util.stream.Collectors;
 public class MainController {
 
     @Autowired
+    EntityManagerFactory entityManagerFactory;
+
+    @Autowired
     QuestionRepository questionRepository;
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    TagRepository tagRepository;
 
     @Autowired
     QuizRepository quizRepository;
@@ -48,8 +56,20 @@ public class MainController {
     @GetMapping("/category/{category_id}")
     @Transactional
     String main(
-            @PathVariable("category_id") Long id, Model model, @SortDefault.SortDefaults(@SortDefault(value = "id", direction = Sort.Direction.DESC)) Pageable pageable) {
-        Page<Question> questions = questionRepository.findByCategoryId(id, pageable);
+            @RequestParam(name = "q", required = false) String q,
+            @PathVariable("category_id") Long id,
+            Model model,
+            @SortDefault.SortDefaults(@SortDefault(value = "id", direction = Sort.Direction.DESC)) Pageable pageable) {
+
+        Page<Question> questions = null;
+
+        if(StringUtils.isEmpty(q)) {
+            questions = questionRepository.findByCategoryId(id, pageable);
+        } else {
+            List<Long> ids = questionRepository.filter(id, q);
+            questions = questionRepository.findQuestionByIdIn(ids, pageable);
+        }
+
         Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
 
         EditCategoryParameters editCategory = new EditCategoryParameters();
@@ -155,6 +175,9 @@ public class MainController {
         model.addAttribute("question", new CreateQuestionFormData());
         model.addAttribute("category", category);
         model.addAttribute("editMode", EditMode.CREATE);
+
+
+
         return "edit";
     }
 
@@ -195,6 +218,25 @@ public class MainController {
         return "redirect:/categories";
     }
 
+    @GetMapping(value = "/cats", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<String> categories123(@RequestParam(value = "q", required = false) String query) {
+        if (StringUtils.isEmpty(query)) {
+
+            //Page<Passenger> page = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "seatNumber")));
+            return categoryRepository.findAll(PageRequest.of(0,15,Sort.by(Sort.Direction.DESC, "name")))
+                    .stream()
+                    .map(c -> c.getName())
+                    .collect(Collectors.toList());
+        }
+
+        return categoryRepository.findByNameContainingOrderByNameDesc(query, PageRequest.of(0, 15, Sort.by(Sort.Direction.ASC, "name")))
+                .stream()
+                .map(c -> c.getName())
+                .collect(Collectors.toList());
+
+    }
+
     @PostMapping("/category/{category_id}/create-question")
     @Transactional
     public String doCreateQuestion(@PathVariable("category_id") Long id,
@@ -211,8 +253,25 @@ public class MainController {
         q.setName(formData.getName());
         q.setQuestion(formData.getQuestion());
         q.setAnswer(formData.getAnswer());
-
         q = questionRepository.save(q);
+
+        for (String tname : formData.getTags().split(",")) {
+
+            Tag t = tagRepository.findByName(tname.toLowerCase().trim());
+
+            if (t == null) {
+                t = new Tag();
+                t.setName(tname.toLowerCase().trim());
+                t.getQuestions().add(q);
+                t = tagRepository.save(t);
+
+                q.getTags().add(t);
+            } else {
+                t.getQuestions().add(q);
+                q.getTags().add(t);
+            }
+
+        }
 
         category.addQuestion(q);
 

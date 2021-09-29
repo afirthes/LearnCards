@@ -14,4 +14,12 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
     List<Category> findByParentId(Long id);
 
     List<Category> findByIdIn(List<Long> ids);
+
+    List<Category> findAll();
+
+    List<Category> findByNameContainingOrderByNameDesc(String query, Pageable pageable);
+
+    Category findByName(String name);
+
+
 }
