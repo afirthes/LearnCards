@@ -251,7 +251,9 @@ public class MainController {
 
         Question q = new Question();
         q.setName(formData.getName());
-        q.setQuestion(formData.getQuestion());
+        q.setQuestion(StringUtils.isEmpty(formData.getQuestion())
+                ? "{\"ops\":[{\"insert\":\""+formData.getName() +"\\n\"}]}"
+                : formData.getQuestion());
         q.setAnswer(formData.getAnswer());
         q = questionRepository.save(q);
 

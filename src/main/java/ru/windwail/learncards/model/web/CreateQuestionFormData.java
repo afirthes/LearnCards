@@ -17,7 +17,6 @@ public class CreateQuestionFormData {
     @NotEmpty
     String name;
 
-    @NotEmpty
     String question;
 
     @NotEmpty

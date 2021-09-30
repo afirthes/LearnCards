@@ -1,5 +1,6 @@
 package ru.windwail.learncards.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -63,10 +64,11 @@ public class QuestionService {
             }
         }
 
-        q.setQuestion(params.getQuestion());
         q.setAnswer(params.getAnswer());
         q.setName(params.getName());
-
+        q.setQuestion(StringUtils.isEmpty(params.getQuestion())
+                ? "{\"ops\":[{\"insert\":\""+params.getName() +"\\n\"}]}"
+                : params.getQuestion());
         q.getTags().forEach(t -> t.getQuestions().remove(q));
         q.getTags().clear();
 
